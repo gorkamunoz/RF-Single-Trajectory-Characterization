@@ -24,7 +24,7 @@ data = data(:, 3:end); % Contains the trajectories
 
 for i1 = 1:num_samples      
     % We calculate the preprocessing for each trajectory
-    jj = exact_displacement(data(i1,:), T_lag);
+    jj = calculate_preprocessing(data(i1,:), T_lag);
     % We change the exponents in the desired format for the decision trees
     % function
     alp = cellstr(num2str(alphas(i1)));

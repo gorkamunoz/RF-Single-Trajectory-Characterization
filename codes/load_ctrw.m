@@ -48,7 +48,7 @@ for alpha = alpha_range
     % As a default, the datasets are created with t_max = 1e3 and contain
     % 1e5 trajectories
     if exist(file_name, 'file') ~= 2        
-        create_ctrw_dataset(alpha, file_name);        
+        ctrw_trajectories(alpha, file_name);        
     end
     % We load the trajectory dataset
     L = load(file_name);

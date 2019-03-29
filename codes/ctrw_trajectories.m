@@ -21,7 +21,8 @@ for i1 = 1:num_traj
     time = 0; % Vector keeping track of time
     count = 2; % keeps trackt of the number of times the while loop is done
         
-    % Evolution of a CTRW    
+    % Evolution of a CTRW   
+    cumulative_t = 0;
     while cumulative_t < t_max
         
         if rand > 0.5
@@ -32,8 +33,11 @@ for i1 = 1:num_traj
         % We retrieve a random waiting time from the distribution 
         % P(t) = (alpha-1)t^(-alpha-1)  
         t_i = (1-rand)^(-1/alpha);        
-        time(count) = time(count-1)+t_i;        
+        time(count) = time(count-1)+t_i;  
+        cumulative_t = cumulative_t+t_i;
+        
         count = count+1;
+        
     end
     
     % Regularizing time    

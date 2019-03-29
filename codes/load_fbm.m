@@ -45,7 +45,7 @@ for aaa = alpha_range
     % As a default, the datasets are created with t_max = 1e3 and contain
     % 1e5 trajectories
     if exist(file_name, 'file') ~= 2        
-        create_fbm_dataset(aaa, file_name);        
+        fbm_trajectories(aaa, file_name);        
     end
     % We load the trajectory dataset
     L = load(file_name);

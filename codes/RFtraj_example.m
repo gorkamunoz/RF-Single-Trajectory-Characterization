@@ -19,7 +19,7 @@ t_max = 1e3;
 % Number of trajectories considered in the dataset
 num_traj = 1e4;
 % Theoretical models included in the training set
-processes = {'fbm', 'ctrw'};
+processes = {'ctrw'};
 % Range of anomalous exponent to consider
 alpha_range = 0.2:.2:1;
 % Ratio between training and test set.

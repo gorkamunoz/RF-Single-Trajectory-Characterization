@@ -16,7 +16,8 @@
 %% Parameters
 % Time length of the trajectories
 t_max = 1e3;
-% Number of trajectories considered in the dataset
+% Number of trajectories considered per processes. This means that the
+% total number of trajectories is num_traj * number of processes.
 num_traj = 1e4;
 % Theoretical models included in the training set
 processes = {'ctrw'};

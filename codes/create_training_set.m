@@ -54,10 +54,10 @@ end
 
 %% 2- Creating the displacements dataset
     
-disp_dataset = create_dataset_displacements(dataset_training, T_lag, num_traj);
+disp_dataset = create_dataset_displacements(dataset_training, T_lag, num_traj*numel(processes));
 
 % We shuffle the rows of the dataset so the diferent classes are mixed
-disp_dataset = disp_dataset(randperm(num_traj, num_traj),:);    
+disp_dataset = disp_dataset(randperm(num_traj*numel(processes), num_traj*numel(processes)),:);    
 % We define X, the future input of the ML algorithm, as the trajectories
 X = disp_dataset(:, 3);
 X = cell2mat(X);

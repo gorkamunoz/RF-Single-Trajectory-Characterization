@@ -75,15 +75,7 @@ X_e = X(numel(Y)*ratio_tT+1:end, :); Y_e = Y(numel(Y)*ratio_tT+1:end); % test se
 if proc_expo == 0 % Processes classification
     Y_a = cellstr(num2str(cell2mat(Y_a)));
     Y_e = cellstr(num2str(cell2mat(Y_e)));
-elseif proc_expo == 1 % Anomalous vs Normal classification
-    Y_a = str2double(Y_a);
-    Y_a(Y_a ~= 1) = 0;
-    Y_a = cellstr(num2str(Y_a));
-
-    Y_e = str2double(Y_e);
-    Y_e(Y_e ~= 1) = 0;
-    Y_e = cellstr(num2str(Y_e));
-elseif proc_expo == 2 % Anomalous exponen characterization
+elseif proc_expo == 1 % Anomalous exponen characterization
     % nothing needs to be done in this case.
 end
 

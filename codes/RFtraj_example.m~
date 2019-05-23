@@ -20,7 +20,7 @@ t_max = 1e3;
 % total number of trajectories is num_traj * number of processes.
 num_traj = 1e4;
 % Theoretical models included in the training set
-processes = {'fbm'};
+processes = {'ctrw','fbm'};
 % Range of anomalous exponent to consider
 alpha_range = 0.5:.1:1.5;
 % Ratio between training and test set.
@@ -29,7 +29,7 @@ ratio_tT = 0.8;
 % create. You can choose between discriminate over processes (0), or to 
 % predict the value of the anomalous exponent (1). For the former, we will
 % have a classification problem, and for the latter a regression problem.
-proc_expo = 1;
+proc_expo = 0;
 % Ratio Anomalous/Normal trajectory. You should take care on having always
 % a balanced number of trajectories per class. As a rule of thumb, for
 % process discrimination and exponent characterization, you should have the
@@ -59,26 +59,20 @@ sprintf('Creating the training dataset...')
 % Then add to the TreeBagger function: 'Options', paroptions
 sprintf('Training...')
 tic
-if proc_expo == 0 
+if proc_expo = 0 
     % If we discrimate between models, we want to have a classication RF.
     CT = TreeBagger(100, X_a, Y_a, 'OOBPrediction','On','Method','classification');
 elseif proc_expo == 1
     % If we want to predict the value of alpha, we want a regression RF. In
-    % such case, the labels need to be doubles, and not strings.
-    CT = TreeBagger(100, X_a, str2double(Y_a), 'OOBPrediction','On','Method','regression');
-end
+    % such case, the labels need to be doubles,
+    CT = TreeBagger(100, X_a, Y_a, 'OOBPrediction','On','Method','regression');
 sprintf('Training has taken %0.2f secs.', toc)
 
 %% Benchmarking the model with the test set
 % Predict new instances
 y_pred = predict(CT, X_e);
-% Changes format of the predictions and correct labels, depending on the
-% form of the RF (classificiation or regression).
-if proc_expo == 0
-    y_p = str2double(y_pred);
-elseif proc_expo == 1
-    y_p = y_pred;
-end    
+% Changes format of the predictions and correct labels
+y_p = str2double(y_pred);
 y_e = str2double(Y_e);
 
 % Depending on the kind of classification problem we are in, different
@@ -95,24 +89,28 @@ if proc_expo == 0
     accuracy = (C(1)+C(4))/numel(y_p);
     
     sprintf('The accuracy of the process discriminating RF algorithm is %.2f', accuracy)    
-    
+
 elseif proc_expo == 1
+    % This is a binary problem so we can use the Matlab confusion matrix to
+    % check the results:
+    C = confusionmat(y_e, y_p);
+    accuracy = (C(1)+C(4))/numel(y_p);
+    
+    sprintf('The accuracy of the anomalous vs normal classification RF algorithm is %.2f.', accuracy)
+    
+elseif proc_expo == 2
     % In this case, we are interested in the mean square error (MSE) of the
     % predictions.     
     MSE = immse(y_e, y_p);     
     % We will also create a figure where we show an histogram
     % of the error made in the exponent prediction. See the paper for
     % details. First, we calculate the error for each trajectory
-    error_prediction = abs(y_p-y_e); 
+    error_prediction = round(abs(y_p-y_e), 1); 
     % The rounding is only included to solve a Matlab bug when calculating
     % the unique function used later. Let's now do an histogram of the errors
-    hist_error = histcounts(error_prediction, numel(alpha_range))./numel(error_prediction);
+    hist_error = histcounts(error_prediction, numel(unique(error_prediction)))./numel(error_prediction);
     % Last, we plot the results
-    figure;   
-    bar(alpha_range-alpha_range(1), hist_error);
-    ylabel('Normalized number of trajectories')
-    xlabel('Error')
-    title(sprintf('Mean absolute error = %.2f', mean(error_prediction)))
+    bar(unique(error_prediction), hist_error);
 end
 
 
